@@ -28,3 +28,7 @@ body {
 .inter-font {
   font-family: var(--font-inter);
 }
+
+.courier-prime-font{
+  font-family: var(--font-courier-prime);
+}
