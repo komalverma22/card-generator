@@ -2,7 +2,7 @@ import Image from "next/image"
 export default function TopContainer(){
     return (
         <div>
-              <div className="w-[488px] h-[96px] bg-[#FFFFFF] rounded-[20px] my-[15px] mx-[15px] py-3  px-5 flex items-center justify-between ">
+              <div className="w-[488px] h-[98px] bg-[#FFFFFF] rounded-[20px] my-[15px] mx-[15px] py-3  px-5 flex items-center justify-between ">
       <div className="flex items-center gap-4 ">
         {/* Profile picture placeholder */}
        <div className="w-[60.16px] h-[57px] bg-black rounded-[14px] flex items-center justify-center overflow-hidden relative ">
@@ -24,7 +24,7 @@ export default function TopContainer(){
 </div>
 
       </div>
-      <div className="flex flex-col gap-1.5 ">
+      <div className="flex flex-col gap-1 ">
         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
         <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
