@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-export default function BottomContainer() {
+export default function BottomContainer({ userData }) {
   return (
     <div className="w-[488px] h-[189px] relative mx-[15px] my-[15px]  rounded-[20px] overflow-hidden">
       {/* Wave background */}
@@ -19,11 +19,15 @@ export default function BottomContainer() {
         <div className="flex justify-between mb-6">
           <div>
             <p className="text-white/80 text-[25px] courier-prime-font font-medium mb-2">Followers</p>
-            <div className="text-white text-[56px] inter-font font-semibold leading-none tracking-[-5%]">1124+</div>
+            <div className="text-white text-[56px] inter-font font-semibold leading-none tracking-[-5%]">
+              {userData?.public_metrics?.followers_count?.toLocaleString() || '0'}+
+            </div>
           </div>
           <div>
             <p className="text-white/80 text-[25px] courier-prime-font font-medium mb-2">Following</p>
-            <div className="text-white text-[56px] inter-font font-semibold leading-none tracking-[-50%]">775+</div>
+            <div className="text-white text-[56px] inter-font font-semibold leading-none tracking-[-50%]">
+              {userData?.public_metrics?.following_count?.toLocaleString() || '0'}+
+            </div>
           </div>
         </div>
 

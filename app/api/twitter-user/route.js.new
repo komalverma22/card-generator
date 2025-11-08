@@ -1,0 +1,103 @@
+import { NextResponse } from 'next/server';
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const username = searchParams.get('username');
+
+  if (!username) {
+    return NextResponse.json({ error: 'Username is required' }, { status: 400 });
+  }
+
+  try {
+    const BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN;
+    
+    if (!BEARER_TOKEN) {
+      console.error('Twitter Bearer Token is not configured');
+      throw new Error('Twitter API is not properly configured');
+    }
+    
+    console.log('Making request for username:', username);
+    console.log('Bearer Token:', BEARER_TOKEN ? 'Present' : 'Missing');
+    
+    const url = `https://api.twitter.com/2/users/by/username/${username}?user.fields=profile_image_url,public_metrics,description`;
+    console.log('Fetching from URL:', url);
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${BEARER_TOKEN}`,
+        'Content-Type': 'application/json',
+      }
+    });
+
+    const responseText = await response.text();
+    let userData;
+    
+    try {
+      userData = JSON.parse(responseText);
+      console.log('Initial API Response:', userData);
+    } catch (parseError) {
+      console.error('Failed to parse response:', responseText);
+      throw new Error('Invalid JSON response from Twitter API');
+    }
+
+    if (!response.ok) {
+      console.error('Twitter API error response:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: userData
+      });
+      throw new Error(`Twitter API error: ${response.status} ${response.statusText}`);
+    }
+    
+    if (!userData.data) {
+      console.error('Invalid Twitter API response structure:', userData);
+      throw new Error('Invalid response structure from Twitter API');
+    }
+
+    // Skip the second API call since we have the data we need
+    const combinedData = {
+      ...userData.data,
+      profile_image_url: userData.data.profile_image_url?.replace('_normal', '') || '',
+      public_metrics: {
+        followers_count: userData.data.public_metrics?.followers_count || 0,
+        following_count: userData.data.public_metrics?.following_count || 0
+      }
+    };
+
+    return NextResponse.json({ data: combinedData });
+
+  } catch (error) {
+    console.error('Twitter API Error:', {
+      message: error.message,
+      cause: error.cause,
+      stack: error.stack
+    });
+    
+    // Network errors
+    if (error.cause?.code === 'ENOTFOUND') {
+      return NextResponse.json({ 
+        error: 'Unable to connect to Twitter API. Please check your internet connection and proxy settings.'
+      }, { status: 500 });
+    }
+    
+    // Authentication errors
+    if (error.message?.includes('401')) {
+      return NextResponse.json({ 
+        error: 'Twitter API authentication failed. Please check your Bearer Token.'
+      }, { status: 401 });
+    }
+
+    // Rate limiting
+    if (error.message?.includes('429')) {
+      return NextResponse.json({ 
+        error: 'Twitter API rate limit exceeded. Please try again later.'
+      }, { status: 429 });
+    }
+    
+    return NextResponse.json({ 
+      error: 'Failed to fetch Twitter data: ' + error.message
+    }, { status: 500 });
+  }
+}
