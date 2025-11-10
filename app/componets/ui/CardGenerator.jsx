@@ -71,13 +71,13 @@ export default function CardGenerator() {
               onChange={(e) => setUsername(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleGenerate()}
               placeholder="Enter username (e.g., elonmusk)"
-              className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-800"
+              className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none text-gray-800"
               disabled={loading}
             />
             <button
               onClick={handleGenerate}
               disabled={loading || !username.trim()}
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-3  text-white rounded-lg font-semibold  disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Loading...' : 'Generate'}
             </button>
